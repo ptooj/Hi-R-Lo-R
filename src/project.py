@@ -1,6 +1,7 @@
 import random
 import pygame
 import os
+import time
 
 
 class RolledText():
@@ -60,7 +61,7 @@ def roll1():
 
 def roll2():
     waiting = True
-    print("Press E to roll the dice...")
+    print("Press E to roll the second dice...")
     while waiting:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -100,6 +101,15 @@ def decision(calc):
                     waiting = False     
     return dec
 
+def money(calc, dec):
+    match dec:
+        case 0:
+            payout = calc * 10
+        case 1:
+            payout = (-calc + 7) * 10
+    
+    return payout
+        
 
 
 
@@ -116,6 +126,7 @@ def main():
     bg = pygame.Color(0, 0, 0)
     font = pygame.font.SysFont(None, 30)
     turn = 0
+    payout = 0
     p1_money = 100
     p2_money = 100
 
@@ -130,24 +141,74 @@ def main():
         screen.blit(roll_text, text_rect)
 
         if turn == 0:
-            p1_outcome = None
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print (f"P1 money : {p1_money}")
             p1_outcome1 = roll1()    
-            #p1_outcome = p1_roll(screen, font)
             p1_dec = decision(p1_outcome1)
+            payout = money(p1_outcome1, p1_dec)
             p1_outcome2 = roll2()
             if p1_outcome2 > p1_outcome1:
-                print("the roll was higher")
+                match p1_dec:
+                    case 0:
+                        print(f"You guessed correctly! You got ${payout}") 
+                        p1_money += payout
+                    case _:
+                        payout = payout + 60
+                        print(f"You guessed wrong! You lose ${payout}")
+                        p1_money -= payout
             elif p1_outcome2 < p1_outcome1:
-                print("the roll was lower")
+                match p1_dec:
+                    case 0:
+                        payout = payout + 60
+                        print(f"You guessed wrong! You lose ${payout}")
+                        p1_money -= payout
+                    case _:
+                        print(f"You guessed correctly! You got ${payout}")
+                        p1_money += payout
             elif p1_outcome2 == p1_outcome1:
                 print("Same!! Lose $50")
-
+                p1_money -= 50
+            
+            print(f"You now have ${p1_money}")
+            time.sleep(3)
             turn = 1
+        
+
+        elif turn == 1:
+            os.system('cls' if os.name == 'nt' else 'clear')
+            print (f"P2 money : {p2_money}")
+            p2_outcome1 = roll1()    
+            p2_dec = decision(p2_outcome1)
+            payout = money(p2_outcome1, p2_dec)
+            p2_outcome2 = roll2()
+            if p2_outcome2 > p2_outcome1:
+                match p2_dec:
+                    case 0:
+                        print(f"You guessed correctly! You got ${payout}") 
+                        p2_money += payout
+                    case _:
+                        payout = payout + 60
+                        print(f"You guessed wrong! You lose ${payout}")
+                        p2_money -= payout
+            elif p2_outcome2 < p2_outcome1:
+                match p2_dec:
+                    case 0:
+                        payout = payout + 60
+                        print(f"You guessed wrong! You lose ${payout}")
+                        p2_money -= payout
+                    case _:
+                        print(f"You guessed correctly! You got ${payout}")
+                        p2_money += payout
+            elif p2_outcome2 == p2_outcome1:
+                print("Same!! Lose $50")
+                p2_money -= 50
+
+            print(f"You now have ${p2_money}")
+            time.sleep(3)
+            turn = 0
 
             
             
-
-
 
         pygame.display.flip()
         dt = clock.tick(24)
