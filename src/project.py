@@ -39,14 +39,19 @@ def roll2(screen):
 
 
 
-def decision(calc):
+def decision(calc, screen, font):
     waiting = True
     h_odds = round(((-calc + 6) / 6 * 100), 1)
     l_odds = round(((calc - 1) / 6 * 100), 1)
-
-    print("Will the next roll be higher or lower?")
-    print(f"Odds for higher : {h_odds}%\nOdds for lower : {l_odds}%")
-    print("Type H or L for higher or lower")
+    decide_text = font.render("Will the next roll be higher or lower?", True, (255,255,255))
+    help_text = font.render("Type H for higher, L for lower", True, (255,255,255))
+    text_rect = decide_text.get_rect()
+    text_rect1 = help_text.get_rect()
+    text_rect.center = (400,300)
+    text_rect1.center = (400,350)
+    screen.blit(decide_text, text_rect)
+    screen.blit(help_text, text_rect1)
+    pygame.display.flip()
     
     while waiting:
         for event in pygame.event.get():
@@ -61,7 +66,7 @@ def decision(calc):
                 if event.key == pygame.K_l:
                     print ("You picked lower")
                     dec = 1
-                    waiting = False     
+                    waiting = False    
     return dec
 
 def money(calc, dec):
@@ -105,18 +110,14 @@ def main():
     p1_money = 100
     p2_money = 100
     dice = pygame.image.load(r"C:\Users\lbern\Desktop\PFDA\FINAL\Hi-R-Lo-R\src\still_dice.png").convert()
-    screen.blit(dice, (300, 200))
     wait_for_roll1 = True
     is_rolling = False
     is_decide = False
     is_scoring = False
-    roll_text = font.render("Press E to roll the dice", True, (255,255,255))
-    decide_text = font.render("Will the next roll be higher or lower\nType H for higher, L for lower", True, (255,255,255))
-    text_rect = roll_text.get_rect()
-    text_rect.center = (400,550)
-    screen.blit(roll_text, text_rect)
+    roll_text = None
+    roll = [0,0]
+    rollcount = 0
 
-    pygame.display.flip()
 
 
 
@@ -131,8 +132,20 @@ def main():
             print (f"P1 money : {p1_money}")
             print("Press E to roll the dice...")
 
+            
+
 
             while wait_for_roll1:
+
+                if roll_text == None:
+                    roll_text = font.render("Press E to roll the dice", True, (255,255,255))
+                    text_rect = roll_text.get_rect()
+                    text_rect.center = (400,550)
+                    screen.blit(roll_text, text_rect)
+                    screen.blit(dice, (300, 200))
+
+
+                    pygame.display.flip()
 
                 for event in pygame.event.get():
                     if event.type == pygame.QUIT:
@@ -144,7 +157,7 @@ def main():
                             wait_for_roll1 = False
                             current_frame = 0
                             current_loop = 0
-                            max_loop = random.randrange(1,3)
+                            max_loop = random.randrange(1,2)
                             frame_c = 24
                             frames = []
                             folder_path = r"C:\Users\lbern\Desktop\PFDA\FINAL\Hi-R-Lo-R\src\dice_anim"
@@ -158,7 +171,6 @@ def main():
 
 
             if is_rolling:
-                #dice = rolling_anim(frame_c, frames)
                 screen.blit(bg, (0,0))  
                 screen.blit(frames[current_frame], (300, 200))
                 current_frame += 1
@@ -167,19 +179,38 @@ def main():
                     current_loop +=1
                     current_frame = 0
                     if current_loop > max_loop:
-                        is_rolling = False
-                        is_decide = True
-                        roll1 = random.randrange(1,7)
+                        is_rolling = False                        
+                        roll[rollcount] = random.randrange(1,7)
+                        outcome_text = font.render(f"You rolled a {roll[rollcount]}!", True, (255,255,255))
+                        text_rect = outcome_text.get_rect()
+                        text_rect.center = (400, 100)
+                        screen.blit(bg, (0,0)) 
+                        screen.blit(outcome_text, text_rect)
+                        pygame.display.flip()
+                        
+                        if rollcount == 0:
+                            is_decide = True
+                            rollcount += 1
+                        elif rollcount == 1:
+                            is_scoring == True
+                            rollcount = 0
+                        
                         
 
             if is_decide:
-                p1_dec = decision(roll1)
-                payout = money(roll1, p1_dec)
+                p1_dec = decision(roll[0], screen, font)
+                payout = money(roll[0], p1_dec)
+                is_decide = False
+                wait_for_roll1 = True
+                screen.blit(bg, (0,0)) 
+                roll_text = None
+
+
 
             """if is_rolling2:
                 p1_outcome2 = roll2(screen)"""
             if is_scoring:
-                if p1_outcome2 > p1_outcome1:
+                if roll[1] > roll[0]:
                     match p1_dec:
                         case 0:
                             print(f"You guessed correctly! You got ${payout}") 
@@ -188,7 +219,7 @@ def main():
                             payout = payout + 60
                             print(f"You guessed wrong! You lose ${payout}")
                             p1_money -= payout
-                elif p1_outcome2 < p1_outcome1:
+                elif roll[1] < roll[0]:
                     match p1_dec:
                         case 0:
                             payout = payout + 60
@@ -197,7 +228,7 @@ def main():
                         case _:
                             print(f"You guessed correctly! You got ${payout}")
                             p1_money += payout
-                elif p1_outcome2 == p1_outcome1:
+                elif roll[1] == roll[0]:
                     print("Same!! Lose $50")
                     p1_money -= 50
                     print(f"You now have ${p1_money}")
