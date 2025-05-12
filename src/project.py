@@ -149,7 +149,7 @@ def main():
                             wait_for_roll1 = False
                             current_frame = 0
                             current_loop = 0
-                            max_loop = random.randrange(1,2)
+                            max_loop = random.randrange(1,3)
                             frame_c = 24
                             frames = []
                             folder_path = r"C:\Users\lbern\Desktop\PFDA\FINAL\Hi-R-Lo-R\src\dice_anim"
@@ -204,20 +204,18 @@ def main():
                             final_text = font.render(f"P{turn + 1} guessed correctly! Got ${payout}", True, (255,255,255))
                             money[turn] += payout
                         case _:
-                            payout = payout + 60
-                            final_text = font.render(f"P{turn + 1} guessed wrong! Lost ${payout}", True, (255,255,255))
-                            money[turn] -= payout
+                            final_text = font.render(f"P{turn + 1} guessed wrong! Lost ${abs(payout-60)}", True, (255,255,255))
+                            money[turn] -= abs(payout-60)
                 elif roll[1] < roll[0]:
                     match dec:
                         case 0:
-                            payout = payout + 60
-                            final_text = font.render(f"P{turn + 1} guessed wrong! Lost ${payout}", True, (255,255,255))
-                            money[turn] -= payout
+                            final_text = font.render(f"P{turn + 1} guessed wrong! Lost ${abs(payout-60)}", True, (255,255,255))
+                            money[turn] -= abs(payout-60)
                         case _:
                             final_text = font.render(f"P{turn + 1} guessed correctly! Got ${payout}", True, (255,255,255))
                             money[turn] += payout
                 elif roll[1] == roll[0]:
-                    final_text = font.render(f"P{turn + 1} rolled snake eyes! Lost $50", True, (255,255,255))
+                    final_text = font.render(f"P{turn + 1} rolled identically! Lost $50", True, (255,255,255))
                     money[turn] -= 50
                 
                 text_rect = final_text.get_rect()
