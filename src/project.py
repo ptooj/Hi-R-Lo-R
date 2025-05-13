@@ -224,7 +224,11 @@ def main():
                     h_odds = round(((-roll[0] + 6) / 6 * 100), 1)
                     l_odds = round(((roll[0] - 1) / 6 * 100), 1)
                     choice_num = random.randrange(1,6)
-                    if roll[0] != 1 or roll[0] != 6:
+                    if roll[0] == 1:
+                        dec = 0
+                    elif roll[0] == 6:
+                        dec = 1
+                    else:
                         if h_odds > l_odds:
                             dec = 0
                             if choice_num == 5:
