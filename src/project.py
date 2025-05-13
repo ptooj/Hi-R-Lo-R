@@ -99,13 +99,13 @@ def main():
     resolution = (800, 600)
     screen = pygame.display.set_mode(resolution)
     running = True
-    bg = pygame.image.load(r"C:\Users\lbern\Desktop\PFDA\FINAL\Hi-R-Lo-R\src\tablebg.jpg").convert()
+    bg = pygame.image.load(r"C:\src\tablebg.jpg").convert()
     font = pygame.font.SysFont(None, 60)
     m_font = pygame.font.SysFont(None, 30)
     turn = 0
     payout = 0
     money = [100, 100]
-    dice = pygame.image.load(r"C:\Users\lbern\Desktop\PFDA\FINAL\Hi-R-Lo-R\src\still_dice.png").convert()
+    dice = pygame.image.load(r"C:\src\still_dice.png").convert()
     wait_for_roll1 = True
     is_rolling = False
     is_decide = False
@@ -151,7 +151,7 @@ def main():
                     max_loop = random.randrange(1,3)
                     frame_c = 24
                     frames = []
-                    folder_path = r"C:\Users\lbern\Desktop\PFDA\FINAL\Hi-R-Lo-R\src\dice_anim"
+                    folder_path = r"C:\src\dice_anim"
                     os.chdir(folder_path)
                     for i in range(frame_c):
                         filename = f"frame_{i:02d}_delay-0.03s.png"
@@ -179,7 +179,7 @@ def main():
                             max_loop = random.randrange(1,3)
                             frame_c = 24
                             frames = []
-                            folder_path = r"C:\Users\lbern\Desktop\PFDA\FINAL\Hi-R-Lo-R\src\dice_anim"
+                            folder_path = r"C:\src\dice_anim"
                             os.chdir(folder_path)
                             for i in range(frame_c):
                                 filename = f"frame_{i:02d}_delay-0.03s.png"
