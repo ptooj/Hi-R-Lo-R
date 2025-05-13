@@ -59,7 +59,7 @@ def moneycalc(calc, dec):
 def transition(turn, font, screen, money, bg):
     time.sleep(2.5)
     if money[turn] < 1:
-        tr_text = font.render(f"P{turn + 1} has no money, so they died", True, (255,255,255))  
+        tr_text = font.render(f"P{turn + 1} has no money, so they lose", True, (255,255,255))  
         text_rect = tr_text.get_rect()
         text_rect.center = (400, 300)
         screen.blit(bg, (0,0))
